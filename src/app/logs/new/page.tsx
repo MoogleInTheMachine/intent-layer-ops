@@ -6,6 +6,11 @@ import { createEntry } from "@/app/actions/create-entry";
 const ROLE_OPTIONS = ["Strategist", "Architect", "Implementer", "Synthesizer", "Project Manager"] as const;
 const TOOL_OPTIONS = ["GPT", "Claude", "Copilot", "Gemini", "Other"] as const;
 
+const inputClass =
+  "w-full border border-border rounded-lg px-3 py-2 text-sm bg-background " +
+  "focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent " +
+  "placeholder:text-muted transition-shadow";
+
 export default function NewLogPage() {
   const [project, setProject] = useState("");
   const [workSummary, setWorkSummary] = useState("");
@@ -52,78 +57,145 @@ export default function NewLogPage() {
   }
 
   return (
-    <main className="p-6 space-y-4 max-w-2xl">
-      <h1 className="text-xl font-semibold">New diary entry</h1>
+    <main className="max-w-2xl mx-auto px-6 py-10 space-y-8">
 
-      <form onSubmit={onSubmit} className="space-y-4">
-        <label className="block text-sm font-medium">
-          Project / Module (optional)
+      {/* Page header */}
+      <div className="space-y-1">
+        <h1 className="text-2xl font-bold tracking-tight">New entry</h1>
+        <p className="text-sm text-muted">
+          Capture what you actually did. Be specific — this feeds your AI summaries
+          and checkpoint exports.
+        </p>
+      </div>
+
+      <form onSubmit={onSubmit} className="space-y-6">
+
+        {/* Project */}
+        <div className="space-y-1">
+          <label className="block text-sm font-medium text-foreground">
+            Project / Module{" "}
+            <span className="text-muted font-normal">(optional)</span>
+          </label>
           <input
-            className="mt-1 w-full border rounded p-2"
-            placeholder="intent layer / ops tool / whisperpad / semantic click"
+            className={inputClass}
+            placeholder="e.g. intent-layer-ops, whisperpad, semantic-click"
             value={project}
             onChange={(e) => setProject(e.target.value)}
           />
-        </label>
+          <p className="text-xs text-muted">
+            Tag this entry to a project so summaries can be filtered by scope.
+          </p>
+        </div>
 
-        <label className="block text-sm font-medium">
-          What I did (required, bullets)
+        {/* What I did */}
+        <div className="space-y-1">
+          <label className="block text-sm font-medium text-foreground">
+            What I did
+          </label>
           <textarea
-            className="mt-1 w-full border rounded p-2 min-h-[140px]"
-            placeholder="- Bullet 1&#10;- Bullet 2"
+            className={`${inputClass} min-h-[140px] resize-y`}
+            placeholder={"- Built the export API endpoint\n- Refactored auth middleware\n- Fixed date parsing bug"}
             value={workSummary}
             onChange={(e) => setWorkSummary(e.target.value)}
             required
           />
-        </label>
+          <p className="text-xs text-muted">
+            Use bullet points. Include concrete outputs — files created, PRs merged, systems changed.
+          </p>
+        </div>
 
-        <label className="block text-sm font-medium">
-          Decisions (optional)
+        {/* Decisions */}
+        <div className="space-y-1">
+          <label className="block text-sm font-medium text-foreground">
+            Decisions{" "}
+            <span className="text-muted font-normal">(optional)</span>
+          </label>
           <textarea
-            className="mt-1 w-full border rounded p-2 min-h-[90px]"
-            placeholder="- Decision 1&#10;- Decision 2"
+            className={`${inputClass} min-h-[90px] resize-y`}
+            placeholder={"- Chose Supabase RLS over custom middleware\n- Deferred auth until MVP ships"}
             value={decisions}
             onChange={(e) => setDecisions(e.target.value)}
           />
-        </label>
+          <p className="text-xs text-muted">
+            Record architectural choices or trade-offs made today. Even small decisions compound over time.
+          </p>
+        </div>
 
-        <label className="block text-sm font-medium">
-          Blockers / risks (optional)
+        {/* Blockers */}
+        <div className="space-y-1">
+          <label className="block text-sm font-medium text-foreground">
+            Blockers / risks{" "}
+            <span className="text-muted font-normal">(optional)</span>
+          </label>
           <textarea
-            className="mt-1 w-full border rounded p-2 min-h-[90px]"
-            placeholder="- Blocker 1&#10;- Risk 2"
+            className={`${inputClass} min-h-[90px] resize-y`}
+            placeholder={"- Waiting on Clerk webhook fix\n- Risk: DB schema not validated against prod yet"}
             value={blockers}
             onChange={(e) => setBlockers(e.target.value)}
           />
-        </label>
+          <p className="text-xs text-muted">
+            Anything slowing you down or creating future risk. This surfaces in your AI checkpoint prompts.
+          </p>
+        </div>
 
-        <label className="block text-sm font-medium">
-          Next steps (optional)
+        {/* Next steps */}
+        <div className="space-y-1">
+          <label className="block text-sm font-medium text-foreground">
+            Next steps{" "}
+            <span className="text-muted font-normal">(optional)</span>
+          </label>
           <textarea
-            className="mt-1 w-full border rounded p-2 min-h-[90px]"
-            placeholder="- Next step 1&#10;- Next step 2"
+            className={`${inputClass} min-h-[90px] resize-y`}
+            placeholder={"- Wire up summary storage to Supabase\n- Add entry detail view\n- Write export tests"}
             value={nextSteps}
             onChange={(e) => setNextSteps(e.target.value)}
           />
-        </label>
+          <p className="text-xs text-muted">
+            What's immediately next? These become your starting context in tomorrow's entry.
+          </p>
+        </div>
 
-        <label className="block text-sm font-medium">
-          Time spent (optional)
+        {/* Time spent */}
+        <div className="space-y-1">
+          <label className="block text-sm font-medium text-foreground">
+            Time spent{" "}
+            <span className="text-muted font-normal">(optional)</span>
+          </label>
           <input
-            className="mt-1 w-full border rounded p-2"
-            placeholder="e.g. 1.5h or 90m"
+            className={`${inputClass} max-w-[160px]`}
+            placeholder="e.g. 2h or 90m"
             value={timeSpent}
             onChange={(e) => setTimeSpent(e.target.value)}
           />
-        </label>
+          <p className="text-xs text-muted">
+            Rough estimate is fine. Used to calculate weekly effort in summaries.
+          </p>
+        </div>
 
+        {/* AI roles */}
         <div className="space-y-2">
-          <div className="text-sm font-medium">AI roles used (optional)</div>
-          <div className="flex flex-wrap gap-3">
+          <div className="space-y-0.5">
+            <div className="text-sm font-medium text-foreground">
+              AI roles used{" "}
+              <span className="text-muted font-normal">(optional)</span>
+            </div>
+            <p className="text-xs text-muted">
+              How did AI assist? Select all that applied to today's session.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
             {ROLE_OPTIONS.map((r) => (
-              <label key={r} className="text-sm flex items-center gap-2">
+              <label
+                key={r}
+                className={`cursor-pointer select-none text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
+                  aiRoles.includes(r)
+                    ? "bg-accent text-white border-accent"
+                    : "border-border text-muted hover:border-accent hover:text-foreground"
+                }`}
+              >
                 <input
                   type="checkbox"
+                  className="sr-only"
                   checked={aiRoles.includes(r)}
                   onChange={() => toggle(aiRoles, r, setAiRoles)}
                 />
@@ -133,13 +205,30 @@ export default function NewLogPage() {
           </div>
         </div>
 
+        {/* AI tools */}
         <div className="space-y-2">
-          <div className="text-sm font-medium">AI tools used (optional)</div>
-          <div className="flex flex-wrap gap-3">
+          <div className="space-y-0.5">
+            <div className="text-sm font-medium text-foreground">
+              AI tools used{" "}
+              <span className="text-muted font-normal">(optional)</span>
+            </div>
+            <p className="text-xs text-muted">
+              Which tools were active during this work session?
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
             {TOOL_OPTIONS.map((t) => (
-              <label key={t} className="text-sm flex items-center gap-2">
+              <label
+                key={t}
+                className={`cursor-pointer select-none text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
+                  aiTools.includes(t)
+                    ? "bg-accent text-white border-accent"
+                    : "border-border text-muted hover:border-accent hover:text-foreground"
+                }`}
+              >
                 <input
                   type="checkbox"
+                  className="sr-only"
                   checked={aiTools.includes(t)}
                   onChange={() => toggle(aiTools, t, setAiTools)}
                 />
@@ -149,11 +238,23 @@ export default function NewLogPage() {
           </div>
         </div>
 
-        <button className="border rounded px-3 py-2 text-sm" type="submit">
-          Save entry
-        </button>
+        {/* Submit */}
+        <div className="flex items-center gap-4 pt-2">
+          <button
+            type="submit"
+            className="bg-accent text-white text-sm font-medium px-5 py-2.5 rounded-lg hover:opacity-90 transition-opacity"
+          >
+            Save entry
+          </button>
+          {status && (
+            <p className={`text-sm font-medium ${
+              status === "Saved." ? "text-success" : "text-muted"
+            }`}>
+              {status}
+            </p>
+          )}
+        </div>
 
-        {status && <p className="text-sm text-gray-600">{status}</p>}
       </form>
     </main>
   );

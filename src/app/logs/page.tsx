@@ -24,28 +24,68 @@ export default async function LogsPage() {
     : { data: [] as any[] };
 
   return (
-    <main className="p-6 space-y-4 max-w-3xl">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Entries</h1>
-        <Link className="text-sm underline" href="/logs/new">
-          New entry
-        </Link>
+    <main className="max-w-3xl mx-auto px-6 py-10 space-y-8">
+
+      {/* Page header */}
+      <div className="space-y-1">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold tracking-tight">Work log</h1>
+          <Link
+            href="/logs/new"
+            className="text-sm font-medium border border-border rounded-lg px-4 py-2 hover:bg-surface transition-colors"
+          >
+            + New entry
+          </Link>
+        </div>
+        <p className="text-sm text-muted">
+          Your 50 most recent entries, newest first.
+        </p>
       </div>
 
+      {/* Entry list */}
       <div className="space-y-3">
         {(entries ?? []).map((e) => (
-          <div key={e.id} className="border rounded p-3">
-            <div className="text-sm text-gray-600">
-              {new Date(e.created_at).toLocaleString()}
-              {e.project ? ` • ${e.project}` : ""}
+          <div
+            key={e.id}
+            className="border border-border rounded-xl p-5 bg-background hover:bg-surface transition-colors"
+          >
+            <div className="flex items-center gap-2 text-xs text-muted mb-3">
+              <span>
+                {new Date(e.created_at).toLocaleDateString("en-US", {
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </span>
+              {e.project && (
+                <>
+                  <span>·</span>
+                  <span className="bg-accent-light text-accent font-medium px-2 py-0.5 rounded-full">
+                    {e.project}
+                  </span>
+                </>
+              )}
             </div>
-            <pre className="whitespace-pre-wrap text-sm mt-2">{e.work_summary}</pre>
+            <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans text-foreground line-clamp-4">
+              {e.work_summary}
+            </pre>
           </div>
         ))}
+
         {(!entries || entries.length === 0) && (
-          <p className="text-sm text-gray-600">No entries yet.</p>
+          <div className="text-center py-16 space-y-3">
+            <p className="text-sm text-muted">No entries yet.</p>
+            <Link
+              href="/logs/new"
+              className="inline-block text-sm font-medium text-accent hover:underline"
+            >
+              Log your first work entry
+            </Link>
+          </div>
         )}
       </div>
+
     </main>
   );
 }
