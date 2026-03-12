@@ -45,9 +45,10 @@ export default async function LogsPage() {
       {/* Entry list */}
       <div className="space-y-3">
         {(entries ?? []).map((e) => (
-          <div
+          <Link
             key={e.id}
-            className="border border-border rounded-xl p-5 bg-background hover:bg-surface transition-colors"
+            href={`/logs/${e.id}`}
+            className="block border border-border rounded-xl p-5 bg-background hover:bg-surface transition-colors"
           >
             <div className="flex items-center gap-2 text-xs text-muted mb-3">
               <span>
@@ -70,7 +71,7 @@ export default async function LogsPage() {
             <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans text-foreground line-clamp-4">
               {e.work_summary}
             </pre>
-          </div>
+          </Link>
         ))}
 
         {(!entries || entries.length === 0) && (
